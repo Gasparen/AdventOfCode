@@ -12,14 +12,19 @@ def calculate_total_paper_usage(l: int, w: int, h:int) -> int:
     sum = reduce(lambda x, y: x+y, sides)
     return sum+min_value
 
+def calculate_total_ribbon_usage(l: int, w: int, h:int) -> int:
+    sides = sorted([l, w, h])
+    sum = 2*sides[0]+2*sides[1]+l*w*h
+    return sum
+
 def main():
     df = read_file()
     df.columns = ['l', 'w', 'h']
-    df['sumSquareFeet'] = df.apply(lambda row: calculate_total_paper_usage(row['l'],row['w'],row['h']), axis=1)
+    df['sumPaper'] = df.apply(lambda row: calculate_total_paper_usage(row['l'],row['w'],row['h']), axis=1)
+    df['sumRibbon'] = df.apply(lambda row: calculate_total_ribbon_usage(row['l'],row['w'],row['h']), axis=1)
 
-    total = df['sumSquareFeet'].sum()
-
-    print(total)
+    print(df['sumPaper'].sum())
+    print(df['sumRibbon'].sum())
 
 if __name__ == '__main__':
     main()
