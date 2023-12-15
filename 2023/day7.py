@@ -6,7 +6,7 @@ from functools import total_ordering
 # https://www.reddit.com/r/adventofcode/comments/18cr4xr/2023_day_7_better_example_input_not_a_spoiler/
 
 def read_files():
-    df = pd.read_csv(filepath_or_buffer='day7_indata.csv', delimiter=' ', header=None)
+    df = pd.read_csv(filepath_or_buffer='inputs\day7_indata.csv', delimiter=' ', header=None)
     return df
 
 class Card:
