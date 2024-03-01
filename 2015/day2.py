@@ -2,7 +2,7 @@ import pandas as pd
 from functools import reduce
 
 def read_file():
-    df = pd.read_csv(filepath_or_buffer='day2_indata.csv', delimiter='x',header= None)
+    df = pd.read_csv(filepath_or_buffer='inputs/day2_indata.csv', delimiter='x',header= None)
     return df
 
 def calculate_total_paper_usage(l: int, w: int, h:int) -> int:
