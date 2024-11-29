@@ -8,24 +8,24 @@ def read_file():
 
 def main():
     directions = read_file()
-    x = y = 0
+    robo = {'x':0, 'y':0}
+    santa = {'x':0, 'y':0}
+    
     houses = {'0,0': 1}
-    for c in directions:
+    for i,c in enumerate(directions):
+        currentSanta = santa if i%2==0 else robo
         match c:
             case '^':
-                y+=1
+                currentSanta['y']+=1
             case '>':
-                x+=1
+                currentSanta['x']+=1
             case 'v':
-                y-=1
+                currentSanta['y']-=1
             case '<':
-                x-=1
-        coordinate = f"{x},{y}"
+                currentSanta['x']-=1
+        coordinate = f"{currentSanta['x']},{currentSanta['y']}"
         value = houses[coordinate] if coordinate in houses else 0
-        #print(f"c: {c} => x,y: {x},{y}")
-        houses[f"{x},{y}"] = value+1
-
-    print(houses)
+        houses[coordinate] = value+1
     
     print(len(list(houses.values())))
 
