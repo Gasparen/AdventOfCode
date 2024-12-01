@@ -16,5 +16,9 @@ def main():
     df['diff'] = df.apply(lambda row: abs(row['List1'] - row['List2']), axis=1)
     print(df['diff'].sum())
 
+    occurences = df['List2'].value_counts()
+    df['Similarity Score'] = df['List1'].map(lambda x: occurences.get(x, 0) * x)
+    print(df['Similarity Score'].sum())
+    
 if __name__ == '__main__':
     main()
