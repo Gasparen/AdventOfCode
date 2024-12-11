@@ -7,12 +7,23 @@ class letterPos:
         return f"string_index: {self.string_index}, pos: {self.pos_in_string}"
 
 class xmasWord:
-    def __init__(self, x_pos: letterPos, direction):
-        self.x_pos = x_pos
-        self.m_pos = None
-        self.a_pos = None
-        self.s_pos = None
-        (self.index_direction, self.pos_direction) = direction
+    def __init__(self, x_pos: letterPos, direction=None):
+        if direction is not None:
+            self.positions = [x_pos, None, None, None]
+
+            self.x_pos = 0
+            self.m_pos = 1
+            self.a_pos = 2
+            self.s_pos = 3
+
+            (self.index_direction, self.pos_direction) = direction
+        else:
+            self.positions = [x_pos, None, None, None, None]
+            self.a_pos = 0
+            self.quartet1_pos = 1
+            self.quartet2_pos = 2
+            self.quartet3_pos = 3
+            self.quartet4_pos = 4
 
     def checkIndexInRange(self, listOfStrings, index):
         return index in range(0,len(listOfStrings))
@@ -27,35 +38,49 @@ class xmasWord:
                 if (s[pos] == letter):
                     return True
         return False
+    
+    def getLetter(self, listOfStrings, index, pos):
+        if self.checkIndexInRange(listOfStrings, index):
+            s = listOfStrings[index]
+            if self.checkPosInString(s, pos):
+                return s[pos]
+        return None
+
+    def findLetter(self, listOfStrings, letter, pos_to_start_from, pos_to_update):
+        nextIndex = self.positions[pos_to_start_from].string_index+self.index_direction
+        nextPos = self.positions[pos_to_start_from].pos_in_string+self.pos_direction
+        
+        if (self.checkForLetter(listOfStrings, letter, nextIndex, nextPos)):
+            self.positions[pos_to_update] = letterPos(nextIndex, nextPos)
+            return True
+
+        return False
 
     def findM(self, listOfStrings):
-        nextIndex = self.x_pos.string_index+self.index_direction
-        nextPos = self.x_pos.pos_in_string+self.pos_direction
-        
-        if (self.checkForLetter(listOfStrings, 'M', nextIndex, nextPos)):
-            self.m_pos = letterPos(nextIndex, nextPos)
-            return True
-
-        return False
+        return self.findLetter(listOfStrings, 'M', self.x_pos, self.m_pos)
     
     def findA(self, listOfStrings):
-        nextIndex = self.m_pos.string_index+self.index_direction
-        nextPos = self.m_pos.pos_in_string+self.pos_direction
-        
-        if (self.checkForLetter(listOfStrings, 'A', nextIndex, nextPos)):
-            self.a_pos = letterPos(nextIndex, nextPos)
-            return True
-
-        return False
+        return self.findLetter(listOfStrings, 'A', self.m_pos, self.a_pos)
 
     def findS(self, listOfStrings):
-        nextIndex = self.a_pos.string_index+self.index_direction
-        nextPos = self.a_pos.pos_in_string+self.pos_direction
-        
-        if (self.checkForLetter(listOfStrings, 'S', nextIndex, nextPos)):
-            self.s_pos = letterPos(nextIndex, nextPos)
+        return self.findLetter(listOfStrings, 'S', self.a_pos, self.s_pos)
+    
+    def findX_MAS(self, listOfStrings):
+        #   Q2[1,-1] | Q1[1, 1]
+        #  ---------------------
+        #  Q3[-1,-1] | Q4[-1,1]
+        #
+        letter_a = self.positions[self.a_pos]
+        index_base = letter_a.string_index
+        pos_base = letter_a.pos_in_string
+        q1 = self.getLetter(listOfStrings, index_base+1, pos_base+1)
+        q2 = self.getLetter(listOfStrings, index_base+1, pos_base-1)
+        q3 = self.getLetter(listOfStrings, index_base-1, pos_base-1)
+        q4 = self.getLetter(listOfStrings, index_base-1, pos_base+1)
+        if q1 is None or q2 is None or q3 is None or q4 is None:
+            return False
+        if ((q1 == 'M' and q3 == 'S') or (q1 == 'S' and q3 == 'M')) and ((q1 == q2 and q3 == q4 and q1 != q3) or (q1 == q4 and q2 == q3 and q1 != q3)):
             return True
-
         return False
 
     def __str__(self):
@@ -83,6 +108,7 @@ def main():
     listOfStrings = read_file()
 
     listOfXs = []
+    listOfAs = []
     for string_index, s in enumerate(listOfStrings):
         for i, c in enumerate(s):
             if c == 'X':
@@ -91,6 +117,8 @@ def main():
                         if x_direction == 0 and y_direction == 0:
                             continue
                         listOfXs.append(xmasWord(letterPos(string_pos_in_list=string_index, pos_in_string=i), (x_direction,y_direction)))
+            if c == 'A':
+                listOfAs.append(xmasWord(letterPos(string_pos_in_list=string_index, pos_in_string=i)))
     
     listOfXMs = []
     for x in listOfXs:
@@ -107,10 +135,17 @@ def main():
         if xma.findS(listOfStrings):
             listOfXMASs.append(xma)
 
-    #for xmas in listOfXMASs:
-    #    print(xmas)
+#    for xmas in listOfXMASs:
+#        print(xmas)
+
+    listOfX_MASs = []
+    for a in listOfAs:
+        if a.findX_MAS(listOfStrings):
+            listOfX_MASs.append(a)
     
     print(len(listOfXMASs))
+    #print(listOfAs)
+    print(len(listOfX_MASs))
 
 if __name__ == '__main__':
     main()
