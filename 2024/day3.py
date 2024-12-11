@@ -12,14 +12,31 @@ def multiply(l):
         sum += int(x)*int(y)
     return sum
 
+def multiplyTurnOnOff(l):
+    sum = 0
+    do = True
+    for (x,y,on_off) in l:
+        if do and x != '':
+            sum += int(x)*int(y)
+        if on_off != '':
+            do = True if on_off == 'do()' else False
+    return sum
+        
+
 def main():
     df = read_file()
     df.columns = ['data']
     df['muls'] = df['data'].map(lambda x: re.findall(r'mul\((\d{1,3}),(\d{1,3})\)', x))
+    df['mulsDoDont'] = df['data'].map(lambda x: re.findall(r'mul\((\d{1,3}),(\d{1,3})\)|(do\(\)|don\'t\(\))', x))
     df['result'] = df['muls'].map(multiply)
+    df['result2'] = df['mulsDoDont'].map(multiplyTurnOnOff)
 
-    print(df)
+
+    print(df['result'])
     print(df['result'].sum())
+    print(df['result2'])
+    print(df['result2'].sum())
+
 
     
 if __name__ == '__main__':

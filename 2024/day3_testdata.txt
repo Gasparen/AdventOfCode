@@ -1,2 +1,4 @@
 xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))
 xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,634]then(mul(111,8)mul(8,523))
+xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
+)+when())~why(),),mul(712,171)@}-?}mul(506,85)who()%mul(613,601)/;#from()#mul(977,581)~what()?/$^-+(*mul(142,89)[who();*):*mul(64,644)}when()select()mul(652,872)mul(594,202)?%$when(196,699)mul(311,646)<>/how()where()(+:mul(867,971)}&where()'/&[&$mul(192,659)select();<#}mul(367,411)mul(841,862)
