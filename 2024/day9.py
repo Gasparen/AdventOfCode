@@ -50,26 +50,54 @@ def defragment(files, freeSpace):
     files.extend(movedFiles)
     return files
 
+def defragmentWholeFiles(files, freeSpace):
+    newFiles = []
+    for file in reversed(files):
+        [index, fileID, amount] = file
+        freeSpaceAvailable = False
+        freeSpaceListIndex = None
+        for i,space in enumerate(freeSpace):
+            [freeIndex, freeAmount] = space
+            if  index < freeIndex:
+                break
+            if freeAmount >= amount:
+                freeSpaceAvailable = True
+                freeSpaceListIndex = i
+                break
+        if freeSpaceAvailable:
+            space = freeSpace[freeSpaceListIndex]
+            [freeIndex, freeAmount] = space
+            newFiles.append([freeIndex, fileID, amount])
+            newFreeIndex = freeIndex + amount
+            newFreeAmount = freeAmount - amount
+            freeSpace[freeSpaceListIndex] = [newFreeIndex, newFreeAmount]
+            freeSpace.sort(key=lambda x: x[0])
+        else:
+            newFiles.append(file)
+        
+    return newFiles
+
+def calcCheckSum(files):
+    checksum = 0
+    for [index, fileID, amount] in files:        
+        tempSum = sum([index+i for i in range(amount)]) * fileID
+        checksum += tempSum
+    return checksum
+
 def main():
     diskString = read_file()
 
-    #print(diskString)
-
     files, freeSpace = explode(diskString)
-    #print(files)
-    #print(freeSpace)
+    files2, freeSpace2 = explode(diskString)
 
     newFiles = defragment(files, freeSpace)
-    #print(newFiles)
+    newFiles2 = defragmentWholeFiles(files2, freeSpace2)
+    
     newFiles.sort(key=lambda x: x[0])
-    #print(newFiles)
+    newFiles2.sort(key=lambda x: x[0])
 
-    checksum = 0
-    for [index, fileID, amount] in newFiles:        
-        tempSum = sum([index+i for i in range(amount)]) * fileID
-        checksum += tempSum
-        #print(f'temp:{tempSum} New checksum:{checksum}')
-    print(checksum)
-
+    print(calcCheckSum(newFiles))
+    print(calcCheckSum(newFiles2))
+    
 if __name__ == '__main__':
     main()
