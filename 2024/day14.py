@@ -13,6 +13,9 @@ def printPicture(picture):
 def plot(picture, x, y):
     picture[y][x] = '#'
 
+def plotTuple(picture, pos):
+    picture[pos[1]][pos[0]] = '#'
+
 def main():
     df = read_file()
     width = 101
@@ -43,9 +46,15 @@ def main():
     print(safetyFactor)
 
     
-
- 
-
+    for i in range(10000):
+        df['posIter'] = df.apply(lambda row: ((row.xPosition + (row.xVelocity*i))%width, (row.yPosition + (row.yVelocity*i))%height), axis=1)
+        uniqueValues = df['posIter'].unique().size
+        if uniqueValues == 500:
+            picture = [[' ' for i in range(width)] for i in range(height)]
+            df['posIter'].map(lambda x: plotTuple(picture, x))
+            printPicture(picture)
+            print(f'iteration {i}: posIter has {uniqueValues} unique values {'tree?'if df['posIter'].is_unique else ''}')
+            break
 
 if __name__ == '__main__':
     main()
