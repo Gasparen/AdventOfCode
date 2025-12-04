@@ -29,27 +29,37 @@ def printMap(listOfStrings):
     for l in listOfStrings:
         print("".join(l))
 
-def main():
-    listOfStrings = read_file()
+def iterateRemoval(listOfStrings):
     listOfStringsCopy = []
     accessablePaperRolls = 0
 
     for i, s in enumerate(listOfStrings):
-        #print(i, s)
         rowString = ''
         for j , c in enumerate(s):
+            addChar = c
             if (c=='@'):
                 rollsAdjacent = countAdjacent(i, j, listOfStrings)
-                rowString = rowString + str(rollsAdjacent)
                 if rollsAdjacent < 4:
                     accessablePaperRolls += 1
-            else:
-                rowString = rowString + c
+                    addChar = '.'
+            rowString += addChar
+
         listOfStringsCopy.append(rowString)
+    return accessablePaperRolls, listOfStringsCopy
+
+def main():
+    newState = read_file()
+    totalPaperRollsRemoved = 0
+    iterationRemovedRolls = 1 # goto while loop
     
-    print(accessablePaperRolls)
-    # printMap(listOfStrings)
-    # printMap(listOfStringsCopy)
+    while iterationRemovedRolls > 0:
+        #printMap(newState)
+        iterationRemovedRolls, newState = iterateRemoval(newState)
+        totalPaperRollsRemoved += iterationRemovedRolls
+        #print(totalPaperRollsRemoved, iterationRemovedRolls)
+   
+    printMap(newState)
+    print(totalPaperRollsRemoved)
 
 if __name__ == '__main__':
     main()
